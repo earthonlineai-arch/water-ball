@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <title>水蓝 API · 登录页主视觉</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #fff; }
+    body { display: grid; place-items: center; }
+    canvas { display: block; width: 100%; height: 100%; opacity: 0; }
+    #fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff; }
+    #fallback[hidden] { display: none; }
+    #error { display: none; max-width: 30em; padding: 24px; color: #4d6268; font: 15px/1.7 system-ui, sans-serif; }
+    canvas { touch-action:none; cursor:grab; }
+
+    #drag-hint { position:absolute;left:16px;bottom:12px;margin:0;max-width:calc(100% - 120px);color:#8ca9bd;font:12px/1.8 system-ui,sans-serif;pointer-events:none; }
+
+    #drag-hint[data-limited="true"] { color:#aaa; }
+
+    #motion { position:absolute; right:16px; bottom:14px; border:1px solid #dfedf6; border-radius:18px; padding:7px 12px; background:#fff; color:#6793b2; font:12px/1.4 system-ui,sans-serif; cursor:pointer; }
+
+    #motion[hidden] { display:none; }
+
+    #motion:hover { color:#247db7; border-color:#b3d8ef; }
+
+    #motion:focus-visible { outline:2px solid #349fdf; outline-offset:3px; }
+
+    #static-fallback { position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100vw,123.076923vh);aspect-ratio:1920 / 1560;pointer-events:none; }
+    #static-fallback[hidden] { display:none; }
+    #fallback:not([hidden]) { --breath-scale:1.027;animation:water-breathe 8.6s ease-in-out infinite;transform-origin:50% 50%; }
+    #static-fallback > span { position:absolute;background-image:var(--droplet-atlas);background-size:500% 100%;background-repeat:no-repeat;opacity:0;--breath-scale:1.165;transform-origin:50% 50%;animation:bead-appear 1s ease-out var(--delay) forwards,water-breathe var(--breath-duration) ease-in-out var(--breath-delay) infinite;animation-play-state:inherit; }
+    @keyframes bead-appear { from {opacity:0} to {opacity:1} }
+    @keyframes water-breathe { 0%,100% {transform:scale(1)} 50% {transform:scale(var(--breath-scale))} }
+
+
+
+  </style>
+</head>
+<body>
+  <img id="fallback" hidden alt="纯白背景上的清透水蓝色水球" data-src="data:image/webp;base64,@@POSTER@@">
+  <div id="static-fallback" hidden aria-hidden="true"><span style="left:17.500000%;top:23.974359%;width:9.062500%;height:11.153846%;background-position:0% 0;--delay:0.00s;--breath-duration:7.20s;--breath-delay:0.00s"></span><span style="left:53.333333%;top:9.166667%;width:7.500000%;height:9.230769%;background-position:25% 0;--delay:0.16s;--breath-duration:7.75s;--breath-delay:-1.30s"></span><span style="left:73.906250%;top:28.846154%;width:10.937500%;height:13.461538%;background-position:50% 0;--delay:0.32s;--breath-duration:8.30s;--breath-delay:-2.60s"></span><span style="left:69.635417%;top:72.179487%;width:8.437500%;height:10.384615%;background-position:75% 0;--delay:0.48s;--breath-duration:8.85s;--breath-delay:-3.90s"></span><span style="left:20.729167%;top:71.730769%;width:10.000000%;height:12.307692%;background-position:100% 0;--delay:0.64s;--breath-duration:9.40s;--breath-delay:-5.20s"></span></div>
+  <script id="static-droplets-data" type="application/octet-stream">@@STATIC_DROPLETS@@</script>
+  <canvas id="water" aria-label="纯白背景上的清透水蓝色水球，可拖出水珠并自动融合" role="img"></canvas>
+  <div id="error" role="alert"></div>
+  <p id="drag-hint">正在加载完整水球…</p>
+  <button id="motion" hidden type="button" aria-label="播放或暂停水球动画" aria-pressed="true">暂停动画</button>
+  <script id="fragment-aa" type="x-shader/x-fragment">@@ANTIALIAS@@</script>
+  <script id="vertex" type="x-shader/x-vertex">#version 300 es
+    in vec2 position;
+    void main() { gl_Position = vec4(position, 0.0, 1.0); }
+  </script>
+  <script id="fragment" type="x-shader/x-fragment">@@FRAGMENT@@</script>
+
+  <script>@@GPU_JS@@</script>
+  <script id="normal-atlas" type="application/octet-stream">@@NORMALS@@</script>
+  <script id="environment-atlas" type="application/octet-stream">@@ENVIRONMENT@@</script>
+  <script>@@RUNTIME_JS@@</script>
+</body>
+</html>
